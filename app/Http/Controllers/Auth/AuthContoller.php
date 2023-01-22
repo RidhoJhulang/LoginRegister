@@ -8,10 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use Hash;
 use Session;
 use App\Models\User;
+use Exception;
 use Illuminate\Validation\Rules\Password;
 
 class AuthContoller extends Controller
 {
+
+    protected $maxAttempts = 3;
+    protected $decayMinutes = 1;
 
     public function showFormLogin() {
         if(Auth::check()) {
@@ -28,13 +32,20 @@ class AuthContoller extends Controller
         $request->validate([
             'email'    => 'required',
             'password' => 'required',
+            'captcha' => 'required|captcha'
         ]);
-   
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')->withSuccess('Signed in');
+
+        try{
+
+            $credentials = $request->only('email', 'password');
+            if (Auth::attempt($credentials)) {
+                return redirect()->intended('dashboard')->withSuccess('Signed in');
+            }
+    
+        }catch(Exception $e){
+            dd($e->getMessage());
         }
-  
+        
         return redirect('login')->withErrors('Login details are not valid');
     }
 
@@ -70,5 +81,10 @@ class AuthContoller extends Controller
         Auth::logout();
   
         return Redirect('/');
+    }
+
+    public function reloadCaptcha()
+    {
+        return response()->json(['captcha'=> captcha_img()]);
     }
 }

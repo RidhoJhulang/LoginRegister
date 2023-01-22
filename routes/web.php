@@ -23,7 +23,7 @@ Route::get('/login',  [AuthContoller::class, 'showFormLogin']);
 Route::get('/register', [AuthContoller::class, 'showFormRegister']);
 
 
-Route::post('/login', [AuthContoller::class, 'login'])->name('login');
+Route::post('/login', [AuthContoller::class, 'login'])->name('login')->middleware("throttle:3,1");;
 Route::post('/register', [AuthContoller::class, 'register'])->name('register');
 
 Route::get('/user', [UserController::class, 'index'])->name('users.index');
@@ -33,3 +33,5 @@ Route::post('user/resetpass/{id}', [UserController::class, 'resetPass']);
 Route::get('/dashboard', [UserController::class, 'dashboard']); 
 
 Route::get('/signout', [AuthContoller::class, 'signOut'])->name('signout');
+
+Route::get('/reload-captcha', [AuthContoller::class, 'reloadCaptcha']);

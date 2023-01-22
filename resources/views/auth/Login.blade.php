@@ -26,6 +26,9 @@
          .card text-white py-5 d-md-down-none{
              background-color:#292B36;
          }
+        .reload {
+            font-family: Lucida Sans Unicode
+        }
      </style>
 </head>
 
@@ -75,6 +78,17 @@
                                     </div>
                                     <input class="form-control" name="password" type="password" placeholder="Password">
                                 </div>
+                                <div class="form-group mt-4 mb-4">
+                                    <div class="captcha">
+                                        <span>{!! captcha_img() !!}</span>
+                                        <button type="button" class="btn btn-danger reload-captha" id="reload-captha">
+                                            &#x21bb;
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha">
+                                </div>
                                 <div class="row">
                                     <div class="col-6">
                                         <button type="submit" class="btn px-4" style="background-color: #292B36;color:#ffff;">Login</button>
@@ -95,13 +109,24 @@
             </div>
         </div>
     </div>
-
-<!-- jQuery first, then Popper.js, Bootstrap, then CoreUI  -->
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>    
 <script type="application/javascript" src="{{ asset('vendor/coreui/js/jquery.slim.min.js') }}"></script>
 <script type="application/javascript" src="{{ asset('vendor/coreui/js/bootstrap.bundle.min.js') }}"></script>
 <script type="application/javascript" src="{{ asset('vendor/coreui/js/coreui.min.js') }}"></script>
 <script type="application/javascript" src="{{ asset('vendor/coreui/js/coreui-utilities.min.js') }}"></script>
-
+{{-- @section('script') --}}
+<script type="text/javascript">
+    $('#reload-captha').on('click', function (event) {
+        $.ajax({
+            type: 'GET',
+            url: '/reload-captcha',
+            success: function (data) {
+                $(".captcha span").html(data.captcha);
+            }
+        });
+    });
+</script>
+{{-- @endsection --}}
 </body>
 
 </html>
